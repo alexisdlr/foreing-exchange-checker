@@ -1,9 +1,5 @@
-import React from "react";
-
-type Props = {};
-
-const FavoritesPage = (props: Props) => {
-  return <div>LogPage</div>;
+const FavoritesPage = () => {
+  return <div>FavoritesPage</div>;
 };
 
 export default FavoritesPage;

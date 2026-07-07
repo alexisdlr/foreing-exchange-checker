@@ -14,14 +14,8 @@ export type Rate = {
   rate: number;
 };
 
-export type LatestRatesResponse = {
-  base: string;
-  rates: Rate[];
-  date: string;
-};
+export type CurrenciesResponse = Currency[];
 
-export type RateOnDateResponse = {
-  base: string;
-  rates: Rate[];
-  date: string;
-};
+export type RatesResponse = Rate[];
+
+export type TimeSeriesResponse = Rate[];
