@@ -83,7 +83,7 @@ export const getTimeSeries = async (
 
 export const getPairRate = async (from: string, to: string): Promise<Rate> => {
   try {
-    const response = await fetch(`${BASE_URL}/rates/${from}/${to}`);
+    const response = await fetch(`${BASE_URL}/rate/${from}/${to}`);
     if (!response.ok) {
       throw new Error("Failed to fetch pair rate");
     }
