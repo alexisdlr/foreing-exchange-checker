@@ -1,30 +1,31 @@
-"use client";
-import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { TABS } from "@/lib/constants";
+import Link from "next/link";
+import { Tab, TABS } from "@/lib/constants";
+import { buildHref, cn } from "@/lib/utils";
 
 type TabNavProps = {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
+  activeTab: Tab;
+  currentParams: Record<string, string | undefined>;
 };
 
-const TabNav = ({ activeTab, setActiveTab }: TabNavProps) => {
+const TabNav = ({ activeTab, currentParams }: TabNavProps) => {
   return (
     <div className="flex mt-2 gap-2 border-b border-neutral-600">
       {TABS.map((tab) => {
         const isActive = activeTab === tab.value;
+        const href = buildHref(currentParams, { tab: tab.value });
         return (
-          <Button
-            variant={"default"}
+          <Link
             key={tab.value}
-            onClick={() => setActiveTab(tab.value)}
+            href={href}
+            replace
+            scroll={false}
             className={cn(
-              "text-preset-3 cursor-pointer uppercase border-0 tracking-wider rounded-none hover:bg-transparent text-neutral-50 bg-transparent",
+              "text-preset-3 uppercase border-0 tracking-wider text-neutral-50 px-3 py-2",
               isActive && "border-b border-lime-500",
             )}
           >
             {tab.label}
-          </Button>
+          </Link>
         );
       })}
     </div>

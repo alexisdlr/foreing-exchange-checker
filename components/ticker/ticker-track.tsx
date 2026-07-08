@@ -1,4 +1,3 @@
-import React from "react";
 import TickerList from "./ticker-list";
 
 const TickerTrack = () => {

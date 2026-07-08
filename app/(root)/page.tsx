@@ -1,29 +1,39 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getCurrencies, getPairRate } from "@/lib/api";
-import { DEFAULT_PAIR } from "@/lib/constants";
+import { DEFAULT_PAIR, Tab } from "@/lib/constants";
 import { Currency } from "@/lib/types";
-import { validatePair } from "@/lib/utils";
-import Converter from "@/components/converter";
-import Tabs from "@/components/tabs/tabs";
+import { getValidTab, validatePair } from "@/lib/utils";
+import ConverterSkeleton from "@/components/skeletons/converter-skeleton";
+import Converter from "@/components/converter/converter";
+import Favorites from "@/components/tabs/favorites";
+import Compare from "@/components/tabs/compare";
+import History from "@/components/tabs/history";
+import Logs from "@/components/tabs/log";
+import TabNav from "@/components/tabs/tabnav";
 
+import TabsSkeleton from "@/components/skeletons/tabs-skeleton";
 interface HomePageProps {
-  searchParams: Promise<{ from?: string; to?: string }>;
+  searchParams: Promise<{ from?: string; to?: string; tab?: string }>;
 }
 
-const HomePage = async ({ searchParams }: HomePageProps) => {
+// page.tsx (RSC)
+export default async function HomePage({ searchParams }: HomePageProps) {
   const currencies = await getCurrencies();
+
   return (
-    <div className="flex flex-col items-center justify-center text-neutral-200">
-      <Suspense fallback={<div>Loading...</div>}>
+    <>
+      <Suspense fallback={<ConverterSkeleton />}>
         <ConverterSection searchParams={searchParams} currencies={currencies} />
       </Suspense>
-      <Tabs />
-    </div>
-  );
-};
 
-// ConverterSection — async, aquí vive lo dinámico
+      <Suspense fallback={<TabsSkeleton />}>
+        <TabsSection searchParams={searchParams} />
+      </Suspense>
+    </>
+  );
+}
+
 async function ConverterSection({
   searchParams,
   currencies,
@@ -46,4 +56,22 @@ async function ConverterSection({
   return <Converter currencies={currencies} convert={convert} />;
 }
 
-export default HomePage;
+async function TabsSection({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const currentParams = await searchParams;
+  const { tab } = await searchParams;
+  const activeTab: Tab = getValidTab(tab);
+
+  return (
+    <>
+      <TabNav activeTab={activeTab} currentParams={currentParams} />
+      {activeTab === "history" && <History />}
+      {activeTab === "compare" && <Compare />}
+      {activeTab === "logs" && <Logs />}
+      {activeTab === "favorites" && <Favorites />}
+    </>
+  );
+}

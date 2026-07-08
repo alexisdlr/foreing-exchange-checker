@@ -1,3 +1,5 @@
+import { TABS } from "./constants";
+
 export type Currency = {
   iso_code: string;
   iso_numeric: string;
