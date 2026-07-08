@@ -9,11 +9,13 @@ const LayoutApp = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-full flex flex-col ">
       <Header />
       <LiveTicker />
-      <Converter />
-      <TabNav />
-      <main className="flex-1 px-4" role="main">
-        {children}
-      </main>
+      <div className="flex flex-col items-center justify-center max-w-6xl mx-auto w-full px-4 py-8 md:px-8 md:py-12">
+        <Converter />
+        <TabNav />
+        <main className="flex-1 px-4" role="main">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };

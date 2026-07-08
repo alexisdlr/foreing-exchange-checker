@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     } else if (eventType === "user.deleted") {
       const { id: user_id } = evt.data;
 
-      if (user_id === "" || user_id === null || user_id === undefined) {
+      if (!user_id) {
         const response = {
           message: "No user id found",
         };

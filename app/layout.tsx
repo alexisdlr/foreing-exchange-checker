@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import localFont from "next/font/local";
 import type { Metadata } from "next";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 const jetbrainsMono = localFont({
   src: "../public/assets/fonts/jetbrains-mono/jetbrains-mono-variable.ttf",
@@ -23,7 +24,14 @@ export default function RootLayout({
     <ClerkProvider>
       <html
         lang="en"
-        className={`${jetbrainsMono.variable} h-full antialiased bg-neutral-900`}
+        className={cn(
+          "h-full",
+          "antialiased",
+          "bg-neutral-900",
+          "font-mono",
+          "dark",
+          jetbrainsMono.variable,
+        )}
       >
         <body className=" min-h-full flex flex-col font-mono ">{children}</body>
       </html>
