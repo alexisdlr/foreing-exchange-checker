@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import {
   CurrenciesResponse,
   Rate,
@@ -8,6 +9,9 @@ import {
 const BASE_URL = "https://api.frankfurter.dev/v2";
 
 export const getCurrencies = async (): Promise<CurrenciesResponse> => {
+  "use cache";
+  cacheTag("currencies");
+  cacheLife({ stale: 60 * 60 * 24, revalidate: 60 * 60 * 24 });
   try {
     const response = await fetch(`${BASE_URL}/currencies`);
     if (!response.ok) {
@@ -36,7 +40,9 @@ export const getLatestRates = async (
     return data;
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to fetch latest rates");
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch latest rates",
+    );
   }
 };
 
@@ -56,7 +62,9 @@ export const getRateOnDate = async (
     return data;
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to fetch rate on date");
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch rate on date",
+    );
   }
 };
 
@@ -77,7 +85,9 @@ export const getTimeSeries = async (
     return data;
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to fetch time series");
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch time series",
+    );
   }
 };
 
@@ -85,12 +95,14 @@ export const getPairRate = async (from: string, to: string): Promise<Rate> => {
   try {
     const response = await fetch(`${BASE_URL}/rate/${from}/${to}`);
     if (!response.ok) {
-      throw new Error("Failed to fetch pair rate");
+      throw new Error("Failed to fetch pair rate " + response.statusText);
     }
     const data = await response.json();
     return data;
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to fetch pair rate");
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch pair rate",
+    );
   }
 };

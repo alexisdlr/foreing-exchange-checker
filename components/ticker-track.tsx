@@ -7,6 +7,7 @@ const TickerTrack = () => {
       <div className="flex w-max animate-marquee">
         <TickerList />
         <TickerList aria-hidden="true" />
+        <TickerList aria-hidden="true" />
       </div>
     </div>
   );

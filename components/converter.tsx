@@ -4,50 +4,27 @@ import Image from "next/image";
 import { useState } from "react";
 import SelectCurrency from "./select-currency";
 import { Button } from "./ui/button";
+import { useUpdateUrl } from "@/hooks/use-update-url";
 
-const currencies: Currency[] = [
-  {
-    iso_code: "MXN",
-    iso_numeric: "484",
-    name: "Mexican Peso",
-    symbol: "$",
-    start_date: "1991-11-12",
-    end_date: "2026-07-05",
-  },
-  {
-    iso_code: "USD",
-    iso_numeric: "840",
-    name: "United States Dollar",
-    symbol: "$",
-    start_date: "1991-11-12",
-    end_date: "2026-07-05",
-  },
-  {
-    iso_code: "EUR",
-    iso_numeric: "978",
-    name: "Euro",
-    symbol: "€",
-    start_date: "1991-11-12",
-    end_date: "2026-07-05",
-  },
-  {
-    iso_code: "GBP",
-    iso_numeric: "826",
-    name: "British Pound",
-    symbol: "£",
-    start_date: "1991-11-12",
-    end_date: "2026-07-05",
-  },
-];
+type ConverterProps = {
+  currencies: Currency[];
+  convert: {
+    date: string;
+    base: string;
+    quote: string;
+    rate: number;
+  };
+};
 
-const Converter = () => {
+const Converter = ({ currencies, convert }: ConverterProps) => {
+  const updateUrl = useUpdateUrl({});
   const [selectedCurrency, setSelectedCurrency] = useState<Currency>(
-    currencies[0],
+    currencies.find((c) => c.iso_code === convert.base)!,
   );
   const [amountSend, setAmountSend] = useState<number>(0);
   const [amountReceive, setAmountReceive] = useState<number>(0);
   const [selectedCurrencyReceive, setSelectedCurrencyReceive] =
-    useState<Currency>(currencies[1]);
+    useState<Currency>(currencies.find((c) => c.iso_code === convert.quote)!);
   const [openSend, setOpenSend] = useState(false);
   const [openReceive, setOpenReceive] = useState(false);
 
@@ -60,6 +37,11 @@ const Converter = () => {
       currencies.find((c) => c.iso_code === currency)!,
     );
     setOpenReceive(false);
+  };
+  const onExchange = () => {
+    const rate = convert.rate;
+    const amountReceive = amountSend * rate;
+    setAmountReceive(Math.round(amountReceive * 100) / 100);
   };
   return (
     <div className="w-full h-full flex flex-col items-center justify-center ">
@@ -83,7 +65,7 @@ const Converter = () => {
                 value={amountSend}
                 onChange={(e) => setAmountSend(Number(e.target.value))}
                 placeholder="0.00"
-                className="w-full h-full max-w-[150px] rounded-lg focus:outline-none focus:ring-1 focus:ring-lime-500 text-preset-1 text-neutral-50 placeholder:text-neutral-50/50"
+                className="w-full h-full max-w-[180px] rounded-lg focus:outline-none focus:ring-1 focus:ring-lime-500 text-preset-1 text-neutral-50 placeholder:text-neutral-50/50"
               />
               <SelectCurrency
                 currencies={currencies}
@@ -97,14 +79,17 @@ const Converter = () => {
 
           {/* EXCHANGE BUTTON */}
           <div className=" w-full md:w-auto md:shrink-0 h-full flex items-center justify-center">
-            <button className="bg-neutral-600 text-neutral-50 p-3 rounded-md cursor-pointer ring-1 ring-neutral-500 hover:ring-lime-500/50 transition-all duration-300">
+            <Button
+              onClick={onExchange}
+              className="bg-neutral-600 text-neutral-50 p-3 rounded-md cursor-pointer ring-1 ring-neutral-500 hover:ring-lime-500/50 transition-all duration-300"
+            >
               <Image
                 src="/assets/images/icon-exchange.svg"
                 alt="arrow-right"
                 width={25}
                 height={25}
               />
-            </button>
+            </Button>
           </div>
 
           {/* RECEIVE BOX */}
@@ -120,7 +105,7 @@ const Converter = () => {
                 value={amountReceive}
                 onChange={(e) => setAmountReceive(Number(e.target.value))}
                 placeholder="0.00"
-                className="w-full h-full max-w-[150px] rounded-lg focus:outline-none focus:ring-1 focus:ring-lime-500 text-preset-1 text-neutral-50 placeholder:text-neutral-50/50"
+                className="w-full h-full max-w-[180px] rounded-lg focus:outline-none focus:ring-1 focus:ring-lime-500 text-preset-1 text-neutral-50 placeholder:text-neutral-50/50"
               />
               <SelectCurrency
                 currencies={currencies}
