@@ -11,3 +11,9 @@ export const DEFAULT_PAIR = {
   from: "USD",
   to: "EUR",
 };
+export const RANGES = ["1W", "1M", "3M", "1Y", "5Y"] as const;
+
+export type Range = (typeof RANGES)[number];
+// Range = "1W" | "1M" | "3M" | "1Y" | "5Y"
+
+export const DEFAULT_RANGE: Range = "1M";

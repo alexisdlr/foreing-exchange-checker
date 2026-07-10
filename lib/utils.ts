@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Currency } from "./types";
-import { Tab, TABS } from "./constants";
+import { DEFAULT_RANGE, Range, RANGES, Tab, TABS } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -54,3 +54,79 @@ export function buildHref(
   );
   return "?" + new URLSearchParams(filtered).toString();
 }
+
+const isValidRange = (r: unknown): r is Range => RANGES.includes(r as Range);
+
+export function getValidRange(range: string | undefined | null): Range {
+  // devuelve range si es un valor válido, si no → DEFAULT_RANGE
+  return isValidRange(range) ? range : DEFAULT_RANGE;
+}
+
+const format = (d: Date) => d.toISOString().split("T")[0];
+
+export function getDateRange(range: Range): { start: string; end: string } {
+  const end = new Date(); // hoy
+  const start = new Date(); // arranca como hoy y le vamos a restar
+
+  switch (range) {
+    case "1W":
+      start.setDate(start.getDate() - 7);
+      break;
+    case "1M":
+      start.setMonth(start.getMonth() - 1);
+      break;
+    case "3M":
+      start.setMonth(start.getMonth() - 3);
+      break;
+    case "1Y":
+      start.setFullYear(start.getFullYear() - 1);
+      break;
+    case "5Y":
+      start.setFullYear(start.getFullYear() - 5);
+      break;
+  }
+
+  return {
+    start: format(start),
+    end: format(end),
+  };
+}
+
+export const getValuePrefix = (
+  value: number,
+  type: "number" | "change" | "percentChange",
+) => {
+  if (type === "number") {
+    return value;
+  }
+  const percent = type === "percentChange" ? "%" : "";
+  const decimals = type === "percentChange" ? 2 : 4;
+
+  const absValue = Math.abs(value);
+  if (value > 0) {
+    return `+${absValue.toFixed(decimals)}${percent}`;
+  }
+  if (value < 0) {
+    return `-${absValue.toFixed(decimals)}${percent}`;
+  }
+  if (value === 0) {
+    return `${Math.abs(value).toFixed(decimals)}${percent}`;
+  }
+};
+
+export const getValueClass = (
+  value: number,
+  type: "number" | "change" | "percentChange",
+) => {
+  const isPositive = value > 0;
+  if (type === "percentChange") {
+    return isPositive
+      ? " font-semibold text-green-500"
+      : " font-semibold text-neutral-50";
+  }
+  if (type === "change") {
+    return isPositive
+      ? " font-semibold text-green-500"
+      : " font-semibold text-neutral-50";
+  }
+};

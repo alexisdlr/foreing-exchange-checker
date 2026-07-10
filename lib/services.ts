@@ -74,6 +74,9 @@ export const getTimeSeries = async (
   base: string,
   quotes: string[],
 ): Promise<TimeSeriesResponse> => {
+  "use cache";
+  cacheTag("time-series");
+  cacheLife({ stale: 60 * 60 * 24, revalidate: 60 * 60 * 6 });
   try {
     const response = await fetch(
       `${BASE_URL}/rates?from=${start}&to=${end}&base=${base}&quotes=${quotes.join(",")}`,
@@ -92,6 +95,9 @@ export const getTimeSeries = async (
 };
 
 export const getPairRate = async (from: string, to: string): Promise<Rate> => {
+  "use cache";
+  cacheTag("pair-rate");
+  cacheLife({ stale: 60 * 60 * 24, revalidate: 60 * 60 * 3 });
   try {
     const response = await fetch(`${BASE_URL}/rate/${from}/${to}`);
     if (!response.ok) {

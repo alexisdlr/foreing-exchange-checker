@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { getCurrencies, getPairRate } from "@/lib/api";
-import { DEFAULT_PAIR, Tab } from "@/lib/constants";
+import { getCurrencies, getPairRate } from "@/lib/services";
+import { DEFAULT_PAIR, Range, Tab } from "@/lib/constants";
 import { Currency } from "@/lib/types";
-import { getValidTab, validatePair } from "@/lib/utils";
+import { getValidRange, getValidTab, validatePair } from "@/lib/utils";
 import ConverterSkeleton from "@/components/skeletons/converter-skeleton";
 import Converter from "@/components/converter/converter";
 import Favorites from "@/components/tabs/favorites";
@@ -13,12 +13,20 @@ import Logs from "@/components/tabs/log";
 import TabNav from "@/components/tabs/tabnav";
 
 import TabsSkeleton from "@/components/skeletons/tabs-skeleton";
-interface HomePageProps {
-  searchParams: Promise<{ from?: string; to?: string; tab?: string }>;
-}
+
+type SearchParamsProps = Promise<{
+  from?: string;
+  to?: string;
+  tab?: string;
+  range?: string;
+}>;
 
 // page.tsx (RSC)
-export default async function HomePage({ searchParams }: HomePageProps) {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: SearchParamsProps;
+}) {
   const currencies = await getCurrencies();
 
   return (
@@ -38,12 +46,12 @@ async function ConverterSection({
   searchParams,
   currencies,
 }: {
-  searchParams: Promise<{ from?: string; to?: string }>;
+  searchParams: SearchParamsProps;
   currencies: Currency[];
 }) {
   const { from, to } = await searchParams;
-  const fromCode = from || DEFAULT_PAIR.from;
-  const toCode = to || DEFAULT_PAIR.to;
+  const fromCode = from?.toUpperCase() || DEFAULT_PAIR.from;
+  const toCode = to?.toUpperCase() || DEFAULT_PAIR.to;
   const isValid = validatePair(currencies, fromCode, toCode);
   if (!isValid) {
     redirect(`/?from=${DEFAULT_PAIR.from}&to=${DEFAULT_PAIR.to}`);
@@ -59,16 +67,21 @@ async function ConverterSection({
 async function TabsSection({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: SearchParamsProps;
 }) {
   const currentParams = await searchParams;
-  const { tab } = await searchParams;
+  const { tab, range, from, to } = currentParams;
+  const fromCode = from?.toUpperCase() || DEFAULT_PAIR.from;
+  const toCode = to?.toUpperCase() || DEFAULT_PAIR.to;
   const activeTab: Tab = getValidTab(tab);
+  const activeRange: Range = getValidRange(range);
 
   return (
     <>
       <TabNav activeTab={activeTab} currentParams={currentParams} />
-      {activeTab === "history" && <History />}
+      {activeTab === "history" && (
+        <History from={fromCode} to={toCode} range={activeRange} />
+      )}
       {activeTab === "compare" && <Compare />}
       {activeTab === "logs" && <Logs />}
       {activeTab === "favorites" && <Favorites />}
