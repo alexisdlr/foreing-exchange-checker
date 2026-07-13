@@ -32,7 +32,6 @@ export function amountSizeClass(len: number) {
 }
 
 export function getValidTab(tab: string | undefined | null): Tab {
-  // TABS.some(...) → si existe, devolvemos el tab; si no, TABS[0].value
   return TABS.some((t: { value: string }) => t.value === tab)
     ? (tab as Tab)
     : (TABS[0].value as Tab);
@@ -42,9 +41,6 @@ export function buildHref(
   current: Record<string, string | undefined>,
   updates: Record<string, string | undefined>,
 ): string {
-  // 1. combinar current + updates (updates gana)
-  // 2. omitir claves cuyo valor sea undefined/""
-  // 3. devolver "?" + querystring
   const combined = { ...current, ...updates };
   const filtered = Object.fromEntries(
     Object.entries(combined).filter(
@@ -58,15 +54,14 @@ export function buildHref(
 const isValidRange = (r: unknown): r is Range => RANGES.includes(r as Range);
 
 export function getValidRange(range: string | undefined | null): Range {
-  // devuelve range si es un valor válido, si no → DEFAULT_RANGE
   return isValidRange(range) ? range : DEFAULT_RANGE;
 }
 
 const format = (d: Date) => d.toISOString().split("T")[0];
 
 export function getDateRange(range: Range): { start: string; end: string } {
-  const end = new Date(); // hoy
-  const start = new Date(); // arranca como hoy y le vamos a restar
+  const end = new Date();
+  const start = new Date();
 
   switch (range) {
     case "1W":
@@ -122,11 +117,11 @@ export const getValueClass = (
   if (type === "percentChange") {
     return isPositive
       ? " font-semibold text-green-500"
-      : " font-semibold text-neutral-50";
+      : " font-semibold text-red-500";
   }
   if (type === "change") {
     return isPositive
       ? " font-semibold text-green-500"
-      : " font-semibold text-neutral-50";
+      : " font-semibold text-red-500";
   }
 };

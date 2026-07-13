@@ -4,6 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "db:up": "docker compose up -d",
+    "ngrok:start": "ngrok http https://localhost:3000",
+    "db:down": "docker compose down",
+    "db:prisma:generate": "prisma generate",
+    "db:prisma:migrate": "prisma migrate dev",
+    "db:prisma:studio": "prisma studio",
+    "db:prisma:push": "prisma db push",
+    "db:prisma:pull": "prisma db pull",
+    "db:prisma:reset": "prisma db reset",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

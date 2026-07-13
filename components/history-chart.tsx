@@ -6,7 +6,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "./ui/chart";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from "recharts";
+import { AreaChart, Area, XAxis, YAxis } from "recharts";
 
 type ChartPoint = { date: string; rate: number };
 
@@ -18,20 +18,6 @@ type HistoryChartProps = {
   formattedDate: string;
 };
 
-const ChartTooltipItem = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: number;
-}) => {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-sm font-medium">{label}</span>
-      <span className="text-sm text-muted-foreground">{value}</span>
-    </div>
-  );
-};
 const HistoryChart = ({
   data,
   from,
@@ -55,7 +41,11 @@ const HistoryChart = ({
   const min = Math.min(...chartData.map(({ rate }) => rate));
   const max = Math.max(...chartData.map(({ rate }) => rate));
   const padding = (max - min) * 0.1;
-  const domain = [min - padding, max + padding];
+  const decimals = 5; // FX suele ir bien con 4–5
+  const domain = [
+    Number((min - padding).toFixed(decimals)),
+    Number((max + padding).toFixed(decimals)),
+  ];
 
   return (
     <div className="bg-neutral-700 rounded-lg p-4">
@@ -70,7 +60,12 @@ const HistoryChart = ({
       <ChartContainer config={chartConfig} className="h-[300px] w-full">
         <AreaChart data={chartData}>
           <XAxis dataKey="date" tickLine={false} axisLine={false} />
-          <YAxis domain={domain} tickLine={false} axisLine={false} />
+          <YAxis
+            domain={domain}
+            tickCount={3}
+            tickLine={false}
+            axisLine={false}
+          />
           <ChartTooltip content={<ChartTooltipContent />} />
 
           <defs>
@@ -78,7 +73,7 @@ const HistoryChart = ({
               <stop
                 offset="0%"
                 stopColor="var(--color-lime-500)"
-                stopOpacity={0.4}
+                stopOpacity={0.8}
               />
               <stop
                 offset="100%"

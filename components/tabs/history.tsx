@@ -1,11 +1,13 @@
+import { Suspense } from "react";
 import { Range } from "@/lib/constants";
-import EmptyState from "../empty-state";
 import { getDateRange } from "@/lib/utils";
 import { getTimeSeries } from "@/lib/services";
 import { computeStats } from "@/lib/stats";
 import Stats from "../stats/stats";
 import RangeSelector from "../range-selector";
 import HistoryChart from "../history-chart";
+import StatsSkeleton from "../skeletons/stats-skeleton";
+import HistoryChartSkeleton from "../skeletons/history-chart-skeleton";
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString("en-US", {
@@ -15,7 +17,60 @@ const formatDate = (date: string) => {
   });
 };
 
-const History = async ({
+const HistoryStatsSection = async ({
+  range,
+  from,
+  to,
+}: {
+  range: Range;
+  from: string;
+  to: string;
+}) => {
+  const dateRange = getDateRange(range);
+  const end = dateRange.end;
+  const start = dateRange.start;
+  const timeSeries = await getTimeSeries(start, end, from, [to]);
+
+  const stats = computeStats(timeSeries);
+  const change = Number(stats?.change ?? 0);
+  const percentChange = Number(stats?.percentChange ?? 0);
+  return (
+    <Stats
+      open={stats?.open ?? 0}
+      last={stats?.last ?? 0}
+      change={change}
+      percentChange={percentChange}
+    />
+  );
+};
+
+const HistoryChartSection = async ({
+  range,
+  from,
+  to,
+}: {
+  range: Range;
+  from: string;
+  to: string;
+}) => {
+  const dateRange = getDateRange(range);
+  const end = dateRange.end;
+  const start = dateRange.start;
+  const timeSeries = await getTimeSeries(start, end, from, [to]);
+  const formattedDate = formatDate(timeSeries[timeSeries.length - 1].date);
+
+  return (
+    <HistoryChart
+      data={timeSeries}
+      from={from}
+      to={to}
+      lastRate={timeSeries[timeSeries.length - 1].rate}
+      formattedDate={formattedDate}
+    />
+  );
+};
+
+const History = ({
   from,
   to,
   range,
@@ -25,33 +80,15 @@ const History = async ({
   range: Range;
 }) => {
   const currentParams = { from, to, range, tab: "history" };
-  const dateRange = getDateRange(range);
-  const end = dateRange.end;
-  const start = dateRange.start;
-  const timeSeries = await getTimeSeries(start, end, from, [to]);
-  if (timeSeries.length === 0) {
-    return <EmptyState title="No data" description="No data found" />;
-  }
 
-  const stats = computeStats(timeSeries);
-  const change = Number(stats?.change ?? 0);
-  const percentChange = Number(stats?.percentChange ?? 0);
-  const formattedDate = formatDate(timeSeries[timeSeries.length - 1].date);
   return (
     <div className="flex flex-col gap-4 mt-4">
       <div className="flex flex-col justify-between lg:flex-row  lg:items-center  gap-4">
         {/* STATS */}
         <div className="flex-1 ">
-          {stats ? (
-            <Stats
-              open={stats.open}
-              last={stats.last}
-              change={change}
-              percentChange={percentChange}
-            />
-          ) : (
-            <EmptyState title="No data" description="No data found" />
-          )}
+          <Suspense key={`${from}-${to}-${range}`} fallback={<StatsSkeleton />}>
+            <HistoryStatsSection range={range} from={from} to={to} />
+          </Suspense>
         </div>
         {/* RANGE SELECTOR */}
         <div className="flex-1">
@@ -60,13 +97,12 @@ const History = async ({
       </div>
       {/* CHART */}
       <div className="w-full mt-4">
-        <HistoryChart
-          lastRate={stats?.last ?? 0}
-          formattedDate={formattedDate}
-          data={timeSeries}
-          from={from}
-          to={to}
-        />
+        <Suspense
+          key={`${from}-${to}-${range}`}
+          fallback={<HistoryChartSkeleton />}
+        >
+          <HistoryChartSection range={range} from={from} to={to} />
+        </Suspense>
       </div>
       {/* TABLE */}
       <div>table</div>
