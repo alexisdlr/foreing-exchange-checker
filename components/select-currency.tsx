@@ -12,6 +12,7 @@ import { Currency } from "@/lib/types";
 import Image from "next/image";
 import { Check, ChevronDown } from "lucide-react";
 import { POPULAR_CODES } from "@/lib/constants";
+import CurrencyFlag from "./currency-flag";
 
 type SelectCurrencyProps = {
   currencies: Currency[];
@@ -60,12 +61,13 @@ const SelectCurrency = ({
       <PopoverTrigger asChild>
         <button className="flex items-center gap-2 cursor-pointer bg-neutral-600 ring-1 ring-neutral-500 rounded-md p-3">
           {/* bandera + iso_code + chevron */}
-          <Image
+          <CurrencyFlag key={selectedCurrency} iso_code={selectedCurrency} />
+          {/* <Image
             src={`/assets/images/flags/${selectedCurrency.slice(0, 2).toLowerCase()}.webp`}
             alt={selectedCurrency}
             width={18}
             height={18}
-          />
+          /> */}
           <span className="text-preset-4 text-neutral-50 uppercase">
             {selectedCurrency}
           </span>
@@ -94,12 +96,11 @@ const SelectCurrency = ({
                     keywords={[currency.iso_code, currency.name]}
                     onSelect={() => onSelectCurrency(currency.iso_code)}
                   >
-                    <Image
-                      src={`/assets/images/flags/${currency.iso_code.slice(0, 2).toLowerCase()}.webp`}
-                      alt={currency.iso_code}
-                      width={18}
-                      height={18}
+                    <CurrencyFlag
+                      key={currency.iso_code}
+                      iso_code={currency.iso_code}
                     />
+
                     <span className="text-preset-4 text-neutral-50 ">
                       {currency.iso_code}
                     </span>
@@ -130,11 +131,9 @@ const SelectCurrency = ({
                     keywords={[currency.iso_code, currency.name]}
                     value={currency.iso_code}
                   >
-                    <Image
-                      src={`/assets/images/flags/${currency.iso_code.slice(0, 2).toLowerCase()}.webp`}
-                      alt={currency.iso_code}
-                      width={18}
-                      height={18}
+                    <CurrencyFlag
+                      key={currency.iso_code}
+                      iso_code={currency.iso_code}
                     />
                     <span className="text-preset-4 text-neutral-50 ">
                       {currency.iso_code}

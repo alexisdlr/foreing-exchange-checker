@@ -10,11 +10,6 @@ const TabsSkeleton = () => {
           <Skeleton key={tab.value} aria-hidden="true" className="w-1/4 h-10" />
         ))}
       </div>
-      <div className="flex flex-col gap-6">
-        <Skeleton aria-hidden="true" className="w-full h-10" />
-        <Skeleton aria-hidden="true" className="w-full h-10" />
-        <Skeleton aria-hidden="true" className="w-full h-10" />
-      </div>
     </React.Fragment>
   );
 };

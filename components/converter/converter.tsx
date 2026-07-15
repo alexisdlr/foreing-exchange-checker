@@ -85,7 +85,7 @@ const Converter = ({ currencies, convert }: ConverterProps) => {
         </div>
         <div className="w-full h-[1px] bg-neutral-500/50 mt-4"></div>
         {/* RATE BOX */}
-        <div className="flex flex-col md:flex-row items-center justify-between w-full rounded-lg mt-4">
+        <div className="flex flex-col md:flex-row items-center justify-between w-full rounded-lg mt-4 gap-4">
           <div>
             <span className="text-preset-5 text-neutral-50 uppercase">
               1 {selectedCurrency.iso_code} = {convert.rate}{" "}
