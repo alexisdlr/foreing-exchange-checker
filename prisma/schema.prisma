@@ -24,7 +24,7 @@ model Favorite {
   base      String    
   quote     String    
   createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  updatedAt DateTime 
   deletedAt DateTime?
   @@unique([userId, base, quote])
 }

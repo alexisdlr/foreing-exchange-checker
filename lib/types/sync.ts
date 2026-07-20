@@ -1,28 +1,15 @@
-export type FavoriteSyncItem = {
-  id: string;
-  base: string;
-  quote: string;
-  updatedAt: string;
-  deletedAt: string | null;
-};
+import { z } from "zod";
+import {
+  conversionSyncItemSchema,
+  favoriteSyncItemSchema,
+  syncRequestSchema,
+} from "../zod/schemas";
 
-export type ConversionSyncItem = {
-  id: string;
-  base: string;
-  quote: string;
-  sentAmount: string;
-  receivedAmount: string;
-  rate: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  createdAt: string;
-};
+export type FavoriteSyncItem = z.infer<typeof favoriteSyncItemSchema>;
 
-export type SyncRequest = {
-  since: string | null;
-  favorites: FavoriteSyncItem[];
-  conversions: ConversionSyncItem[];
-};
+export type ConversionSyncItem = z.infer<typeof conversionSyncItemSchema>;
+
+export type SyncRequest = z.infer<typeof syncRequestSchema>;
 
 export type SyncResponse = {
   serverTime: string; // el cliente lo guarda como próximo `since`
