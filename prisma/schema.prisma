@@ -34,7 +34,7 @@ model Conversion {
   userId         String
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  updatedAt      DateTime  
   deletedAt      DateTime?
   base           String
   quote          String

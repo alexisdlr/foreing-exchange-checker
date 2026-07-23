@@ -1,7 +1,7 @@
 import Header from "@/components/header";
 import LiveTicker from "@/components/ticker/live-ticker";
 
-import React from "react";
+import ToasterProvider from "@/components/toaster-provider";
 
 const LayoutApp = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -13,6 +13,7 @@ const LayoutApp = ({ children }: { children: React.ReactNode }) => {
           {children}
         </main>
       </div>
+      <ToasterProvider />
     </div>
   );
 };

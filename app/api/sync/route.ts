@@ -2,7 +2,8 @@ import { syncRequestSchema } from "@/lib/zod/schemas";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { treeifyError } from "zod/v4/core";
-import { applyFavoritePush } from "@/lib/sync/apply-push";
+import { applyConversionPush, applyFavoritePush } from "@/lib/sync/apply-push";
+import { buildPull } from "@/lib/sync/build-pull";
 
 export async function POST(request: Request) {
   const { userId } = await auth();
@@ -27,21 +28,49 @@ export async function POST(request: Request) {
     const { since, favorites, conversions } = parsedBody.data;
 
     const favoriteResult = await applyFavoritePush(userId, favorites);
-    if (!favoriteResult.success) {
+    if (!favoriteResult.success || favoriteResult.status !== 200) {
       return NextResponse.json(
         {
           error: "Error applying favorite push",
           message: favoriteResult.error,
+          status: favoriteResult.status,
         },
-        { status: 500 },
+        { status: favoriteResult.status ?? 500 },
+      );
+    }
+
+    const conversionResult = await applyConversionPush(userId, conversions);
+    if (!conversionResult.success || conversionResult.status !== 200) {
+      return NextResponse.json(
+        {
+          error: "Error applying conversion push",
+          message: conversionResult.error,
+          status: conversionResult.status,
+        },
+        { status: conversionResult.status ?? 500 },
       );
     }
     const serverTime = new Date().toISOString();
 
-    // await applyConversionPush(userId, conversions);
+    const pullResult = await buildPull(userId, since);
+
+    if (pullResult.status !== 200) {
+      return NextResponse.json(
+        {
+          error: "Error building pull",
+          message: pullResult.error,
+          status: pullResult.status,
+        },
+        { status: pullResult.status ?? 500 },
+      );
+    }
 
     return NextResponse.json(
-      { serverTime, since, favorites: [], conversions: [] },
+      {
+        serverTime,
+        favorites: pullResult.favorites,
+        conversions: pullResult.conversions,
+      },
       { status: 200 },
     );
   } catch (error) {

@@ -8,6 +8,7 @@ import { useDebounceValue } from "@/hooks/use-debounce-value";
 import SendAmount from "@/components/converter/send-amount";
 import ReceiveAmount from "@/components/converter/receive-amount";
 import { StarIcon } from "lucide-react";
+import FavoriteButton from "./favorite-button";
 
 type ConverterProps = {
   currencies: Currency[];
@@ -93,10 +94,7 @@ const Converter = ({ currencies, convert }: ConverterProps) => {
             </span>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <Button className="bg-transparent cursor-pointer text-neutral-50 px-4 py-2 rounded-md border-0 outline-0 ring-1 ring-neutral-500 hover:bg-neutral-600 hover:ring-lime-500/50 transition-all duration-300 uppercase">
-              <StarIcon className="w-4 h-4 mr-1" />
-              Favorite
-            </Button>
+            <FavoriteButton />
             <Button className="bg-transparent cursor-pointer text-neutral-50 px-4 py-2 rounded-md border-0 outline-0 ring-1 ring-neutral-500 hover:bg-neutral-600 hover:ring-lime-500/50 transition-all duration-300 uppercase">
               Log Conversion
             </Button>

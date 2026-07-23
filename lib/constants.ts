@@ -19,3 +19,16 @@ export type Range = (typeof RANGES)[number];
 export const DEFAULT_RANGE: Range = "1M";
 
 export const TOMBSTONE_RETENTION_DAYS = 30;
+
+export const TOAST_POSITION = "top-right";
+export const TOAST_STYLE = {
+  background: "bg-neutral-900",
+  color: "text-white",
+  border: "border-neutral-700",
+  borderRadius: "rounded-md",
+  padding: "p-4",
+  fontSize: "text-sm",
+  fontWeight: "bold",
+  textAlign: "center",
+  fontFamily: "font-mono",
+};
