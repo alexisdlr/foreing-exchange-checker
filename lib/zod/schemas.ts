@@ -42,3 +42,18 @@ export const syncRequestSchema = z.object({
   favorites: z.array(favoriteSyncItemSchema).max(500),
   conversions: z.array(conversionSyncItemSchema).max(500),
 });
+
+export const favoritesRatesRequestSchema = z.array(
+  z.object({
+    base: z
+      .string()
+      .min(3)
+      .max(3)
+      .transform((val) => val.toUpperCase()),
+    quote: z
+      .string()
+      .min(3)
+      .max(3)
+      .transform((val) => val.toUpperCase()),
+  }),
+);

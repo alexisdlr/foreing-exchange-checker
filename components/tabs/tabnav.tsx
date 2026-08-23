@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Tab, TABS } from "@/lib/constants";
 import { buildHref, cn } from "@/lib/utils";
+import TabBadge from "./tab-badge";
 
 type TabNavProps = {
   activeTab: Tab;
@@ -20,11 +21,13 @@ const TabNav = ({ activeTab, currentParams }: TabNavProps) => {
             replace
             scroll={false}
             className={cn(
-              "text-preset-3 uppercase border-0 tracking-wider text-neutral-50 px-3 py-2",
+              "flex items-center justify-center gap-2 text-preset-3 uppercase border-0 tracking-wider text-neutral-50 px-3 py-2",
               isActive && "border-b border-lime-500",
             )}
           >
             {tab.label}
+            {tab.value === "favorites" ||
+              (tab.value === "logs" && <TabBadge value={tab.value} />)}
           </Link>
         );
       })}

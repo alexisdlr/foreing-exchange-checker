@@ -2,8 +2,8 @@ export const POPULAR_CODES = ["USD", "EUR", "GBP", "JPY"];
 export const TABS = [
   { label: "History", value: "history" },
   { label: "Compare", value: "compare" },
-  { label: "Logs", value: "logs" },
   { label: "Favorites", value: "favorites" },
+  { label: "Logs", value: "logs" },
 ] as const;
 
 export type Tab = (typeof TABS)[number]["value"];
