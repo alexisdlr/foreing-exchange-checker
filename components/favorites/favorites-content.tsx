@@ -1,14 +1,12 @@
-import { Favorite } from "@/lib/local/db";
-import { Button } from "../ui/button";
-import Image from "next/image";
-import { ArrowRight } from "lucide-react";
 import FavoriteItem from "./favorite-item";
+import { FavoriteWithRate } from "@/lib/types";
 
 type FavoritesContentProps = {
-  favorites: Favorite[];
+  favorites: FavoriteWithRate[];
+  onUnpin: (favorite: FavoriteWithRate) => void;
 };
 
-const FavoritesContent = ({ favorites }: FavoritesContentProps) => {
+const FavoritesContent = ({ favorites, onUnpin }: FavoritesContentProps) => {
   return (
     <div className="bg-neutral-700 rounded-lg px-4 py-6 mt-4">
       <div className="flex items-center justify-between mb-4">
@@ -23,11 +21,12 @@ const FavoritesContent = ({ favorites }: FavoritesContentProps) => {
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {favorites.map((favorite) => (
           <FavoriteItem
-            key={favorite.base + favorite.quote}
+            key={favorite.id}
             favorite={favorite}
+            onUnpin={onUnpin}
           />
         ))}
       </div>

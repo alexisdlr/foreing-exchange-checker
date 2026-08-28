@@ -1,3 +1,5 @@
+import { Favorite } from "./local/db";
+
 export type Currency = {
   iso_code: string;
   iso_numeric: string;
@@ -19,3 +21,7 @@ export type CurrenciesResponse = Currency[];
 export type RatesResponse = Rate[];
 
 export type TimeSeriesResponse = Rate[];
+
+export type FavoriteWithRate = Favorite & {
+  rate: number | null;
+};
