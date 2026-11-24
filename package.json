@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "db:up": "docker compose up -d",
-    "ngrok:start": "ngrok http https://localhost:3000",
+    "ngrok:start": "ngrok http http://localhost:3000",
     "db:down": "docker compose down",
     "db:prisma:generate": "prisma generate",
     "db:prisma:migrate": "prisma migrate dev",

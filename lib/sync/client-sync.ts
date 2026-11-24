@@ -20,11 +20,18 @@ export async function syncNow(
     const db: Db = getDb(userId);
     const since = await getSince(db);
 
-    if (!since) await wipeUserData(db);
-
     const favoritesDirty = await listDirtyFavorites(db);
     const conversionsDirty = await listDirtyConversions(db);
 
+    if (!since) {
+      await wipeUserData(db);
+      for (const favorite of favoritesDirty) {
+        await upsertFavorite(db, favorite);
+      }
+      for (const conversion of conversionsDirty) {
+        await upsertConversion(db, conversion);
+      }
+    }
     const body = {
       favorites: favoritesDirty.map((favorite) => ({
         id: favorite.id,
