@@ -1,4 +1,5 @@
 "use client";
+import { useFavorites } from "@/hooks/use-favorites";
 import { getDb, listConversions, listFavorites } from "@/lib/local/db";
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
@@ -11,19 +12,23 @@ const TabBadge = ({ value }: TabBadgeProps) => {
   const auth = useAuth();
   const { userId } = auth;
   const [count, setCount] = useState(0);
+  const { revision } = useFavorites();
+
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) return;
       const db = getDb(userId);
-      const data =
-        value === "favorites"
-          ? await listFavorites(db)
-          : await listConversions(db);
-      console.log(data, "data");
-      setCount(data.length);
+
+      if (value === "favorites") {
+        const favorites = await listFavorites(db);
+        setCount(favorites.length);
+      } else {
+        const conversions = await listConversions(db);
+        setCount(conversions.length);
+      }
     };
     fetchData();
-  }, [userId, value]);
+  }, [userId, value, revision]);
 
   return (
     <div className="size-4 flex items-center justify-center">

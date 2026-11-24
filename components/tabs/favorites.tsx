@@ -10,12 +10,13 @@ import { FavoriteWithRate, Rate } from "@/lib/types";
 import FavoritesSkeleton from "../favorites/favorites-skeleton";
 import { toggleFavorite } from "@/lib/local/favorites";
 import { syncNow } from "@/lib/sync/client-sync";
+import { useFavorites } from "@/hooks/use-favorites";
 
 const FavoritesTab = () => {
   const { userId } = useAuth();
   const [favorites, setFavorites] = useState<FavoriteWithRate[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const { revision, notifyFavoritesChanged } = useFavorites();
   const handleUnpin = async (favorite: FavoriteWithRate) => {
     try {
       if (!userId) {
@@ -26,6 +27,7 @@ const FavoritesTab = () => {
       await syncNow(userId);
 
       setFavorites(favorites.filter((f) => f.id !== favorite.id));
+      notifyFavoritesChanged();
       toast.success("Unpinned favorite");
     } catch (error) {
       toast.error("Failed to unpin favorite");
@@ -81,7 +83,7 @@ const FavoritesTab = () => {
     };
 
     fetchFavorites();
-  }, [userId]);
+  }, [userId, revision]);
   return (
     <>
       {favorites.length === 0 && !loading ? (

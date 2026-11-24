@@ -11,15 +11,18 @@ import { cn } from "@/lib/utils";
 import { syncNow } from "@/lib/sync/client-sync";
 import { toast } from "react-hot-toast";
 import { DEFAULT_PAIR } from "@/lib/constants";
+import { useFavorites } from "@/hooks/use-favorites";
 
 const FavoriteButton = () => {
+  const { notifyFavoritesChanged, revision } = useFavorites();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const base = searchParams.get("from");
   const quote = searchParams.get("to");
   const { userId } = useAuth();
-  const handleFavorite = async () => {
+
+  const handleFavorite = async (): Promise<void> => {
     if (!userId) {
       toast.error("Sign in to favorite");
       return;
@@ -40,6 +43,7 @@ const FavoriteButton = () => {
         return;
       }
       toast.success(result === "added" ? "Favorite added" : "Favorite removed");
+      notifyFavoritesChanged();
       setIsFavorite(result === "added");
     } catch (error) {
       toast.error("Failed to favorite");
@@ -64,7 +68,7 @@ const FavoriteButton = () => {
       );
     };
     fetchFavorites();
-  }, [base, quote, userId]);
+  }, [base, quote, userId, revision]);
 
   return (
     <Button

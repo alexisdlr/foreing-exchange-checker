@@ -1,4 +1,5 @@
 import Header from "@/components/header";
+import { FavoritesProvider } from "@/components/providers/favorites-context";
 import LiveTicker from "@/components/ticker/live-ticker";
 
 import ToasterProvider from "@/components/toaster-provider";
@@ -10,7 +11,7 @@ const LayoutApp = ({ children }: { children: React.ReactNode }) => {
       <LiveTicker />
       <div className=" max-w-6xl mx-auto h-full w-full px-4 py-8 md:px-8 md:py-12">
         <main className="flex-1" role="main">
-          {children}
+          <FavoritesProvider>{children}</FavoritesProvider>
         </main>
       </div>
       <ToasterProvider />

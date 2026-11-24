@@ -26,8 +26,9 @@ const TabNav = ({ activeTab, currentParams }: TabNavProps) => {
             )}
           >
             {tab.label}
-            {tab.value === "favorites" ||
-              (tab.value === "logs" && <TabBadge value={tab.value} />)}
+            {(tab.value === "favorites" || tab.value === "logs") && (
+              <TabBadge value={tab.value} />
+            )}{" "}
           </Link>
         );
       })}

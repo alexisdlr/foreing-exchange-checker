@@ -7,7 +7,6 @@ import { useUpdateUrl } from "@/hooks/use-update-url";
 import { useDebounceValue } from "@/hooks/use-debounce-value";
 import SendAmount from "@/components/converter/send-amount";
 import ReceiveAmount from "@/components/converter/receive-amount";
-import { StarIcon } from "lucide-react";
 import FavoriteButton from "./favorite-button";
 
 type ConverterProps = {
@@ -84,7 +83,7 @@ const Converter = ({ currencies, convert }: ConverterProps) => {
             selectedCurrencyReceive={selectedCurrencyReceive}
           />
         </div>
-        <div className="w-full h-[1px] bg-neutral-500/50 mt-4"></div>
+        <div className="w-full h-px bg-neutral-500/50 mt-4"></div>
         {/* RATE BOX */}
         <div className="flex flex-col md:flex-row items-center justify-between w-full rounded-lg mt-4 gap-4">
           <div>

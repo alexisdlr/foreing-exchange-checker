@@ -33,7 +33,7 @@ const ReceiveAmount = ({
           value={formatNumber(amountReceive)}
           placeholder={formatNumber(0)}
           className={cn(
-            "w-full h-full max-w-[180px] rounded-lg focus:outline-none focus:ring-1 focus:ring-lime-500",
+            "w-full h-full max-w-45 rounded-lg focus:outline-none focus:ring-1 focus:ring-lime-500",
             amountReceive > 0 && " text-lime-500! ",
             amountSizeClass(formatNumber(amountReceive).length),
           )}
